@@ -7,9 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository(value = "userVoteRepository")
-public interface UserVoteRepository extends JpaRepository<UserVote, Long> {
-    List<UserVote> findByUserId(Long userId);
-    List<UserVote> findByTrackId(Long trackId);
+public interface UserVoteRepository extends JpaRepository<UserVote, Integer> {
+    List<UserVote> findByUserId(Integer userId);
+    List<UserVote> findByTrackId(Integer trackId);
     List<UserVote> findByTargetUserId(Long targetUserId);
-    UserVote findByUserIdAndTrackIdAndTargetUserId(Long userId, String trackId, Long targetUserId);
+    UserVote findByUserIdAndTrackIdAndTargetUserId(Integer userId, String trackId, Integer targetUserId);
 }

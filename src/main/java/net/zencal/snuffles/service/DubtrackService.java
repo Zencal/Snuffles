@@ -98,7 +98,7 @@ public class DubtrackService {
         return dubHistoryResponse.getBody().getData();
     }
 
-    public DubHistory retrieveIfTrackHasBeenPlayedRecently(String trackId) {
+    public DubHistory retrieveDubHistoryIfTrackHasBeenPlayedRecently(String trackId) {
         logger.debug("Checking if song has been played recently");
         List<DubHistory> historyList = retrieveRoomHistory();
         for(DubHistory history : historyList) {
@@ -110,7 +110,7 @@ public class DubtrackService {
     }
 
     public void sendMessageIfTrackHasBeenPlayedRecently(String songId) {
-        DubHistory history = retrieveIfTrackHasBeenPlayedRecently(songId);
+        DubHistory history = retrieveDubHistoryIfTrackHasBeenPlayedRecently(songId);
          if(history != null) {
             DubSong song = history.get_song();
             String timeSince = getTimeSinceLastPlayed(new Date(history.getPlayed()));

@@ -16,13 +16,13 @@ public class UserPlayService {
     @Autowired
     protected UserPlayRepository userPlayRepository;
 
-    public UserPlay updateUserPlayTimes(Long userId, String trackId) {
+    public UserPlay updateUserPlayTimes(Integer userId, String trackId) {
         UserPlay existingUserPlay = findUserPlayByUserIdAndTrackId(userId, trackId);
         if(existingUserPlay == null) {
             return createUserPlay(new UserPlay(userId, trackId));
         } else {
             existingUserPlay.setLastSeen(LocalDateTime.now());
-            existingUserPlay.setTimesPlayed(existingUserPlay.getTimesPlayed() + 1L);
+            existingUserPlay.setTimesPlayed(existingUserPlay.getTimesPlayed() + 1);
             return updateUserPlay(existingUserPlay);
         }
     }
@@ -37,27 +37,27 @@ public class UserPlayService {
         return userPlayRepository.saveAndFlush(userPlay);
     }
 
-    public UserPlay findUserPlayById(Long id) {
+    public UserPlay findUserPlayById(Integer id) {
         return userPlayRepository.findOne(id);
     }
 
-    public void deleteUserPlay(Long id) {
+    public void deleteUserPlay(Integer id) {
         userPlayRepository.delete(id);
     }
 
-    public UserPlay findUserPlayByUserIdAndTrackId(Long userId, String trackId) {
+    public UserPlay findUserPlayByUserIdAndTrackId(Integer userId, String trackId) {
         return userPlayRepository.findByUserIdAndTrackId(userId, trackId);
     }
 
-    public UserPlay addUpdub(Long userId, String trackId) {
+    public UserPlay addUpdub(Integer userId, String trackId) {
         UserPlay userPlay = findUserPlayByUserIdAndTrackId(userId, trackId);
-        userPlay.setUpdubs(userPlay.getUpdubs() + 1L);
+        userPlay.setUpdubs(userPlay.getUpdubs() + 1);
         return updateUserPlay(userPlay);
     }
 
-    public UserPlay addDowndub(Long userId, String trackId) {
+    public UserPlay addDowndub(Integer userId, String trackId) {
         UserPlay userPlay = findUserPlayByUserIdAndTrackId(userId, trackId);
-        userPlay.setDowndubs(userPlay.getDowndubs() + 1L);
+        userPlay.setDowndubs(userPlay.getDowndubs() + 1);
         return updateUserPlay(userPlay);
     }
 }

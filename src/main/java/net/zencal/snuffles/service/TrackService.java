@@ -17,7 +17,7 @@ public class TrackService {
         if(existingTrack == null) {
             return createTrack(new Track(id, type, fkid, title));
         } else {
-            existingTrack.setTimesPlayed(existingTrack.getTimesPlayed() + 1L);
+            existingTrack.setTimesPlayed(existingTrack.getTimesPlayed() + 1);
             existingTrack.setLastSeen(LocalDateTime.now());
             return updateTrack(existingTrack);
         }
@@ -41,13 +41,13 @@ public class TrackService {
 
     public Track addUpdub(String id) {
         Track track = findTrackById(id);
-        track.setUpdubs(track.getUpdubs() + 1L);
+        track.setUpdubs(track.getUpdubs() + 1);
         return updateTrack(track);
     }
 
     public Track addDowndub(String id) {
         Track track = findTrackById(id);
-        track.setDowndubs(track.getDowndubs() + 1L);
+        track.setDowndubs(track.getDowndubs() + 1);
         return updateTrack(track);
     }
 }

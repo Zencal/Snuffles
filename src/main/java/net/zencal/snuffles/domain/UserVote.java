@@ -1,52 +1,73 @@
 package net.zencal.snuffles.domain;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table
 public class UserVote {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id;
+    protected Integer id;
 
-    protected Long userId;
+    protected Integer userId;
     protected String trackId;
-    protected Long targetUserId;
-    protected Long updubs;
-    protected Long downdubs;
+    protected Integer targetUserId;
+    protected Integer updubs;
+    protected Integer downdubs;
+    protected Integer grabs;
+    protected LocalDateTime firstSeen;
+    protected LocalDateTime lastSeen;
 
     public UserVote() {
     }
 
-    public UserVote(Long userId, String trackId, Long targetUserId) {
+    public UserVote(Integer userId, String trackId, Integer targetUserId) {
         this.userId = userId;
         this.trackId = trackId;
         this.targetUserId = targetUserId;
-        this.updubs = 0L;
-        this.downdubs = 0L;
+        this.updubs = 0;
+        this.downdubs = 0;
+        this.grabs = 0;
+        this.firstSeen = LocalDateTime.now();
+        this.lastSeen = LocalDateTime.now();
     }
 
-    public UserVote(Long userId, String trackId, Long targetUserId, Long updubs, Long downdubs) {
+    public UserVote(Integer userId, String trackId, Integer targetUserId, Integer updubs, Integer downdubs) {
         this.userId = userId;
         this.trackId = trackId;
         this.targetUserId = targetUserId;
         this.updubs = updubs;
         this.downdubs = downdubs;
+        this.grabs = 0;
+        this.firstSeen = LocalDateTime.now();
+        this.lastSeen = LocalDateTime.now();
     }
 
-    public Long getId() {
+    public UserVote(Integer userId, String trackId, Integer targetUserId, Integer updubs, Integer downdubs, Integer grabs) {
+        this.userId = userId;
+        this.trackId = trackId;
+        this.targetUserId = targetUserId;
+        this.updubs = updubs;
+        this.downdubs = downdubs;
+        this.grabs = grabs;
+        this.firstSeen = LocalDateTime.now();
+        this.lastSeen = LocalDateTime.now();
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Long getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
@@ -58,27 +79,51 @@ public class UserVote {
         this.trackId = trackId;
     }
 
-    public Long getTargetUserId() {
+    public Integer getTargetUserId() {
         return targetUserId;
     }
 
-    public void setTargetUserId(Long targetUserId) {
+    public void setTargetUserId(Integer targetUserId) {
         this.targetUserId = targetUserId;
     }
 
-    public Long getUpdubs() {
+    public Integer getUpdubs() {
         return updubs;
     }
 
-    public void setUpdubs(Long updubs) {
+    public void setUpdubs(Integer updubs) {
         this.updubs = updubs;
     }
 
-    public Long getDowndubs() {
+    public Integer getDowndubs() {
         return downdubs;
     }
 
-    public void setDowndubs(Long downdubs) {
+    public void setDowndubs(Integer downdubs) {
         this.downdubs = downdubs;
+    }
+
+    public Integer getGrabs() {
+        return grabs;
+    }
+
+    public void setGrabs(Integer grabs) {
+        this.grabs = grabs;
+    }
+
+    public LocalDateTime getFirstSeen() {
+        return firstSeen;
+    }
+
+    public void setFirstSeen(LocalDateTime firstSeen) {
+        this.firstSeen = firstSeen;
+    }
+
+    public LocalDateTime getLastSeen() {
+        return lastSeen;
+    }
+
+    public void setLastSeen(LocalDateTime lastSeen) {
+        this.lastSeen = lastSeen;
     }
 }

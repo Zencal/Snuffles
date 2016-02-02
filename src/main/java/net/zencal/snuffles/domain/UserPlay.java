@@ -9,52 +9,55 @@ import java.time.LocalDateTime;
 public class UserPlay {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id;
+    protected Integer id;
 
-    protected Long userId;
+    protected Integer userId;
     protected String trackId;
-    protected Long timesPlayed;
-    protected Long updubs;
-    protected Long downdubs;
+    protected Integer timesPlayed;
+    protected Integer updubs;
+    protected Integer downdubs;
+    protected Integer grabs;
     protected LocalDateTime firstSeen;
     protected LocalDateTime lastSeen;
 
     public UserPlay() {
     }
 
-    public UserPlay(Long userId, String trackId) {
+    public UserPlay(Integer userId, String trackId) {
         this.userId = userId;
         this.trackId = trackId;
-        this.timesPlayed = 1L;
-        this.updubs = 0L;
-        this.downdubs = 0L;
+        this.timesPlayed = 1;
+        this.updubs = 0;
+        this.downdubs = 0;
+        this.grabs = 0;
         this.firstSeen = LocalDateTime.now();
         this.lastSeen = LocalDateTime.now();
     }
 
-    public UserPlay(Long userId, String trackId, Long timesPlayed, Long updubs, Long downdubs, LocalDateTime firstSeen, LocalDateTime lastSeen) {
+    public UserPlay(Integer userId, String trackId, Integer timesPlayed, Integer updubs, Integer downdubs, Integer grabs, LocalDateTime firstSeen, LocalDateTime lastSeen) {
         this.userId = userId;
         this.trackId = trackId;
         this.timesPlayed = timesPlayed;
         this.updubs = updubs;
         this.downdubs = downdubs;
+        this.grabs = grabs;
         this.firstSeen = firstSeen;
         this.lastSeen = lastSeen;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Long getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
@@ -66,28 +69,36 @@ public class UserPlay {
         this.trackId = trackId;
     }
 
-    public Long getTimesPlayed() {
+    public Integer getTimesPlayed() {
         return timesPlayed;
     }
 
-    public void setTimesPlayed(Long timesPlayed) {
+    public void setTimesPlayed(Integer timesPlayed) {
         this.timesPlayed = timesPlayed;
     }
 
-    public Long getUpdubs() {
+    public Integer getUpdubs() {
         return updubs;
     }
 
-    public void setUpdubs(Long updubs) {
+    public void setUpdubs(Integer updubs) {
         this.updubs = updubs;
     }
 
-    public Long getDowndubs() {
+    public Integer getDowndubs() {
         return downdubs;
     }
 
-    public void setDowndubs(Long downdubs) {
+    public void setDowndubs(Integer downdubs) {
         this.downdubs = downdubs;
+    }
+
+    public Integer getGrabs() {
+        return grabs;
+    }
+
+    public void setGrabs(Integer grabs) {
+        this.grabs = grabs;
     }
 
     public LocalDateTime getFirstSeen() {

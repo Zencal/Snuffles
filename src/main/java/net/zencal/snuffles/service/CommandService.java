@@ -31,7 +31,7 @@ public class CommandService {
         Timestamp timestamp = new Timestamp(json.getLong("time"));
         String username = user.getString("username");
         dubBotService.sendDubtrackMessage(username, chatMessage);
-        chatLogger.debug(username + ": " + chatMessage);
+        chatLogger.trace(username + ": " + chatMessage);
 
         if(StringUtils.equalsIgnoreCase(chatMessage, "!meme")) {
             sendRandomResponseFromFile("memes.json", username);
@@ -39,9 +39,9 @@ public class CommandService {
             dubtrackService.sendBTFO();
         } else if(StringUtils.startsWithIgnoreCase(chatMessage, "!bemygf")) {
             sendRandomResponseFromFile("bemygf.json", username);
-        } else if(StringUtils.startsWithIgnoreCase(chatMessage, "!hootup")) {
+        } else if(StringUtils.startsWithIgnoreCase(chatMessage, "!hootup") && (StringUtils.equalsIgnoreCase(username, "Welp") || StringUtils.equalsIgnoreCase(username, "mrhoot"))) {
             dubtrackService.hootUp();
-        } else if(StringUtils.startsWithIgnoreCase(chatMessage, "!shupoon")) {
+        } else if(StringUtils.startsWithIgnoreCase(chatMessage, "!shupoon") && (StringUtils.equalsIgnoreCase(username, "Welp") || StringUtils.equalsIgnoreCase(username, "poondonkus"))) {
             dubtrackService.shupoon();
         }
     }

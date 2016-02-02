@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository(value = "userPlayRepository")
-public interface UserPlayRepository extends JpaRepository<UserPlay, Long> {
-    List<UserPlay> findByUserId(Long userId);
-    List<UserPlay> findByTrackId(Long trackId);
-    UserPlay findByUserIdAndTrackId(Long userId, String trackId);
+public interface UserPlayRepository extends JpaRepository<UserPlay, Integer> {
+    List<UserPlay> findByUserId(Integer userId);
+    List<UserPlay> findByTrackId(Integer trackId);
+    UserPlay findByUserIdAndTrackId(Integer userId, String trackId);
 }

@@ -14,9 +14,10 @@ public class Track {
     protected String type;
     protected String fkid;
     protected String title;
-    protected Long timesPlayed;
-    protected Long updubs;
-    protected Long downdubs;
+    protected Integer timesPlayed;
+    protected Integer updubs;
+    protected Integer downdubs;
+    protected Integer grabs;
     protected LocalDateTime firstSeen;
     protected LocalDateTime lastSeen;
 
@@ -28,14 +29,15 @@ public class Track {
         this.type = type;
         this.fkid = fkid;
         this.title = title;
-        this.timesPlayed = 1L;
-        this.updubs = 0L;
-        this.downdubs = 0L;
+        this.timesPlayed = 1;
+        this.updubs = 0;
+        this.downdubs = 0;
+        this.grabs = 0;
         this.firstSeen = LocalDateTime.now();
         this.lastSeen = LocalDateTime.now();
     }
 
-    public Track(String id, String type, String fkid, String title, Long timesPlayed, Long updubs, Long downdubs, LocalDateTime firstSeen, LocalDateTime lastSeen) {
+    public Track(String id, String type, String fkid, String title, Integer timesPlayed, Integer updubs, Integer downdubs, Integer grabs, LocalDateTime firstSeen, LocalDateTime lastSeen) {
         this.id = id;
         this.type = type;
         this.fkid = fkid;
@@ -43,6 +45,7 @@ public class Track {
         this.timesPlayed = timesPlayed;
         this.updubs = updubs;
         this.downdubs = downdubs;
+        this.grabs = grabs;
         this.firstSeen = firstSeen;
         this.lastSeen = lastSeen;
     }
@@ -79,28 +82,36 @@ public class Track {
         this.title = title;
     }
 
-    public Long getTimesPlayed() {
+    public Integer getTimesPlayed() {
         return timesPlayed;
     }
 
-    public void setTimesPlayed(Long timesPlayed) {
+    public void setTimesPlayed(Integer timesPlayed) {
         this.timesPlayed = timesPlayed;
     }
 
-    public Long getUpdubs() {
+    public Integer getUpdubs() {
         return updubs;
     }
 
-    public void setUpdubs(Long updubs) {
+    public void setUpdubs(Integer updubs) {
         this.updubs = updubs;
     }
 
-    public Long getDowndubs() {
+    public Integer getDowndubs() {
         return downdubs;
     }
 
-    public void setDowndubs(Long downdubs) {
+    public void setDowndubs(Integer downdubs) {
         this.downdubs = downdubs;
+    }
+
+    public Integer getGrabs() {
+        return grabs;
+    }
+
+    public void setGrabs(Integer grabs) {
+        this.grabs = grabs;
     }
 
     public LocalDateTime getFirstSeen() {

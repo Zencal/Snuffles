@@ -7,8 +7,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-
 @Service
 public class UserVoteService {
     private Logger logger = LogManager.getLogger(UserVoteService.class);
@@ -26,28 +24,30 @@ public class UserVoteService {
         return userVoteRepository.saveAndFlush(userVote);
     }
 
-    public UserVote updateOrCreateUserVote(Long userId, String trackId, Long targetUserId, Boolean vote) {
+    public UserVote updateOrCreateUserVote(Integer userId, String trackId, Integer targetUserId, Boolean vote) {
         UserVote existingUserVote = findUserVoteByUserIdAndTrackIdAndTargetUserId(userId, trackId, targetUserId);
-        Long downDubs = 0L;
-        Long upDubs = 0L;
+        Integer downDubs = 0;
+        Integer upDubs = 0;
 
         if (existingUserVote == null) {
             if(vote) {
-                upDubs = 1L;
-                downDubs = 0L;
+                upDubs = 1;
+                downDubs = 0;
             } else {
-                upDubs = 0L;
-                downDubs = 1L;
+                upDubs = 0;
+                downDubs = 1;
             }
+
             return createUserVote(new UserVote(userId, trackId, targetUserId, upDubs, downDubs));
         } else {
             if(vote) {
-                upDubs = existingUserVote.getUpdubs() + 1L;
+                upDubs = existingUserVote.getUpdubs() + 1;
                 downDubs = existingUserVote.getDowndubs();
             } else {
                 upDubs = existingUserVote.getUpdubs();
-                downDubs = existingUserVote.getDowndubs() + 1L;
+                downDubs = existingUserVote.getDowndubs() + 1;
             }
+
 
             existingUserVote.setUpdubs(upDubs);
             existingUserVote.setDowndubs(downDubs);
@@ -56,33 +56,44 @@ public class UserVoteService {
         }
     }
 
-    public UserVote findUserVoteById(Long id) {
+    public UserVote findUserVoteById(Integer id) {
         return userVoteRepository.findOne(id);
     }
 
-    public void deleteUserVote(Long id) {
+    public void deleteUserVote(Integer id) {
         userVoteRepository.delete(id);
     }
 
-    public UserVote findUserVoteByUserIdAndTrackIdAndTargetUserId(Long userId, String trackId, Long targetUserId) {
+    public UserVote findUserVoteByUserIdAndTrackIdAndTargetUserId(Integer userId, String trackId, Integer targetUserId) {
         return userVoteRepository.findByUserIdAndTrackIdAndTargetUserId(userId, trackId, targetUserId);
     }
 
-    public UserVote addUpdub(Long userId, String trackId, Long targetUserId) {
+    public UserVote addUpdub(Integer userId, String trackId, Integer targetUserId) {
         UserVote userVote = findUserVoteByUserIdAndTrackIdAndTargetUserId(userId, trackId, targetUserId);
         if(userVote == null) {
             userVote = createUserVote(new UserVote(userId, trackId, targetUserId));
         }
-        userVote.setUpdubs(userVote.getUpdubs() + 1L);
+        userVote.setUpdubs(userVote.getUpdubs() + 1);
         return updateUserVote(userVote);
     }
 
-    public UserVote addDowndub(Long userId, String trackId, Long targetUserId) {
+    public UserVote addDowndub(Integer userId, String trackId, Integer targetUserId) {
         UserVote userVote = findUserVoteByUserIdAndTrackIdAndTargetUserId(userId, trackId, targetUserId);
         if(userVote == null) {
             userVote = createUserVote(new UserVote(userId, trackId, targetUserId));
         }
-        userVote.setDowndubs(userVote.getDowndubs() + 1L);
+        userVote.setDowndubs(userVote.getDowndubs() + 1);
         return updateUserVote(userVote);
+    }
+
+    public UserVote addGrab(Integer userId, String trackId, Integer targetUserId) {
+        UserVote existingUserVote = findUserVoteByUserIdAndTrackIdAndTargetUserId(userId, trackId, targetUserId);
+
+        if (existingUserVote == null) {
+            return createUserVote(new UserVote(userId, trackId, targetUserId, 0, 0, 1));
+        } else {
+            existingUserVote.setGrabs(existingUserVote.getGrabs() + 1);
+            return updateUserVote(existingUserVote);
+        }
     }
 }

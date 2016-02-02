@@ -17,13 +17,15 @@
             </column>
 
             <column name="username" type="text" remarks="username"/>
-            <column name="updubsreceived" type="bigint" remarks="Total amount of updubs received"/>
-            <column name="downdubsreceived" type="bigint" remarks="Total amount of downdubs received"/>
-            <column name="updubsgiven" type="bigint" remarks="Total amount of updubs given"/>
-            <column name="downdubsgiven" type="bigint" remarks="Total amount of downdubs given"/>
-            <column name="firstseen" type="date" remarks="Date first seen"/>
-            <column name="lastseen" type="date" remarks="Date last seen"/>
-            <column name="timesseen" type="bigint" remarks="Times seen"/>
+            <column name="updubsreceived" type="integer" remarks="Total amount of updubs received"/>
+            <column name="downdubsreceived" type="integer" remarks="Total amount of downdubs received"/>
+            <column name="grabbed" type="integer" remarks="Total amount of grabs received"/>
+            <column name="updubsgiven" type="integer" remarks="Total amount of updubs given"/>
+            <column name="downdubsgiven" type="integer" remarks="Total amount of downdubs given"/>
+            <column name="grabs" type="integer" remarks="Total amount of grabs given"/>
+            <column name="firstseen" type="timestamp" remarks="Date first seen"/>
+            <column name="lastseen" type="timestamp" remarks="Date last seen"/>
+            <column name="timesseen" type="integer" remarks="Times seen"/>
             <column name="dubuserid" type="text" remarks="Dub User Id"/>
         </createTable>
 
