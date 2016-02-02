@@ -20,6 +20,8 @@ public class CommandService {
     protected DubtrackService dubtrackService;
     @Autowired
     protected DubBotService dubBotService;
+    @Autowired
+    protected StatsService statsService;
 
     private Logger logger = LogManager.getLogger(CommandService.class);
     private Logger chatLogger = LogManager.getLogger("chat");
@@ -43,6 +45,8 @@ public class CommandService {
             dubtrackService.hootUp();
         } else if(StringUtils.startsWithIgnoreCase(chatMessage, "!shupoon") && (StringUtils.equalsIgnoreCase(username, "Welp") || StringUtils.equalsIgnoreCase(username, "poondonkus"))) {
             dubtrackService.shupoon();
+        } else if(StringUtils.startsWithIgnoreCase(chatMessage, "!stats")) {
+            statsService.sendStatsToDubtrack(chatMessage, username);
         }
     }
 

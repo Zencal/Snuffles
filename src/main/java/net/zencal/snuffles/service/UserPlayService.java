@@ -60,4 +60,8 @@ public class UserPlayService {
         userPlay.setDowndubs(userPlay.getDowndubs() + 1);
         return updateUserPlay(userPlay);
     }
+
+    public Integer countTracksPlayedByUserId(Integer userId) {
+        return userPlayRepository.countByUserId(userId);
+    }
 }
