@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="net.zencal.snuffles" id="1.0.2">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists schemaName="public" tableName="track" />
+            </not>
+        </preConditions>
+
+        <createTable tableName="track" remarks="Track">
+            <column name="id" type="text" remarks="track id">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="track_pk"/>
+            </column>
+
+            <column name="type" type="text" remarks="youtube or soundcloud"/>
+            <column name="fkid" type="text" remarks="id for youtube or soundcloud"/>
+            <column name="title" type="text" remarks="title"/>
+            <column name="timesplayed" type="bigint" remarks="Total amount of times played"/>
+            <column name="updubs" type="bigint" remarks="Total amount of updubs given"/>
+            <column name="downdubs" type="bigint" remarks="Total amount of downdubs given"/>
+            <column name="firstseen" type="date" remarks="Date first seen"/>
+            <column name="lastseen" type="date" remarks="Date last seen"/>
+        </createTable>
+
+    </changeSet>
+
+</databaseChangeLog>

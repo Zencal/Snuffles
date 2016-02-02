@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="net.zencal.snuffles" id="1.0.4">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists schemaName="public" tableName="uservote" />
+            </not>
+        </preConditions>
+
+        <createTable tableName="uservote" remarks="User Vote">
+            <column name="id" type="serial" remarks="user vote id">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="user_vote_pk"/>
+            </column>
+
+            <column name="userid" type="bigint" remarks="user id"/>
+            <column name="trackid" type="text" remarks="track id"/>
+            <column name="targetuserid" type="bigint" remarks="Total amount of times played"/>
+            <column name="updubs" type="bigint" remarks="Total amount of updubs given"/>
+            <column name="downdubs" type="bigint" remarks="Total amount of downdubs given"/>
+        </createTable>
+
+    </changeSet>
+
+</databaseChangeLog>

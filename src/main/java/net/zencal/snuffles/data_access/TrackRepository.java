@@ -1,0 +1,9 @@
+package net.zencal.snuffles.data_access;
+
+import net.zencal.snuffles.domain.Track;
+import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+@Repository(value = "trackRepository")
+public interface TrackRepository extends JpaRepository<Track, String> {
+}
