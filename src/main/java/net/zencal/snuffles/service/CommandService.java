@@ -6,10 +6,12 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.Random;
 import java.util.Scanner;
@@ -20,6 +22,10 @@ public class CommandService {
     protected DubtrackService dubtrackService;
     @Autowired
     protected DubBotService dubBotService;
+    @Autowired
+    protected StatsService statsService;
+    @Autowired
+    protected ResourceLoader resourceLoader;
 
     private Logger logger = LogManager.getLogger(CommandService.class);
     private Logger chatLogger = LogManager.getLogger("chat");
@@ -43,6 +49,8 @@ public class CommandService {
             dubtrackService.hootUp();
         } else if(StringUtils.startsWithIgnoreCase(chatMessage, "!shupoon") && (StringUtils.equalsIgnoreCase(username, "Welp") || StringUtils.equalsIgnoreCase(username, "poondonkus"))) {
             dubtrackService.shupoon();
+        } else if(StringUtils.startsWithIgnoreCase(chatMessage, "!stats")) {
+            statsService.sendStatsToDubtrack(chatMessage, username);
         }
     }
 
@@ -55,11 +63,11 @@ public class CommandService {
     }
 
     public JSONArray retrieveJSONArrayFromFile(String filename) {
-        ClassLoader classLoader = getClass().getClassLoader();
-        File memeFile = new File(classLoader.getResource(filename).getFile());
+        Resource resource = resourceLoader.getResource("classpath:" + filename);
         StringBuilder arrayBuilder = new StringBuilder();
 
         try {
+            InputStream memeFile = resource.getInputStream();
             Scanner scanner = new Scanner(memeFile);
             while(scanner.hasNextLine()) {
                 String line = scanner.nextLine();

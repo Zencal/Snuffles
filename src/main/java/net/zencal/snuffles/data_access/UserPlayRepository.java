@@ -11,4 +11,5 @@ public interface UserPlayRepository extends JpaRepository<UserPlay, Integer> {
     List<UserPlay> findByUserId(Integer userId);
     List<UserPlay> findByTrackId(Integer trackId);
     UserPlay findByUserIdAndTrackId(Integer userId, String trackId);
+    Integer countByUserId(Integer userId);
 }
