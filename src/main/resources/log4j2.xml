@@ -3,8 +3,9 @@
     <Properties>
         <Property name="PID">????</Property>
         <Property name="LOG_PATTERN">[%d{yyyy-MM-dd HH:mm:ss.SSS}] log4j2%X{context} - ${sys:PID} %5p [%t] --- %c{1}: %m%n</Property>
-        <Property name="filename">logging.log</Property>
-        <Property name="chatFilename">chat.log</Property>
+        <Property name="CHAT_PATTERN">[%d{yyyy-MM-dd HH:mm:ss}] %m%n</Property>
+        <Property name="filename">logs/logging.log</Property>
+        <Property name="chatFilename">logs/chat.log</Property>
     </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT" follow="true">
@@ -14,17 +15,15 @@
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </File>
         <File name="ChatFile" fileName="${chatFilename}">
-            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <PatternLayout pattern="${CHAT_PATTERN}"/>
         </File>
     </Appenders>
     <Loggers>
-        <logger name="net.zencal" level="debug"/>
-        <Root level="info">
+        <logger name="net.zencal" level="debug">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="File"/>
-        </Root>
-        <logger name="chat" level="debug">
-            <AppenderRef ref="Console"/>
+        </logger>
+        <logger name="chat" level="trace">
             <AppenderRef ref="ChatFile"/>
         </logger>
     </Loggers>

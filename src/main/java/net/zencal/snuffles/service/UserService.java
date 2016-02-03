@@ -21,7 +21,7 @@ public class UserService {
         if(existingUser == null) {
             return createUser(new User(username, dubUserId));
         } else {
-            existingUser.setTimesSeen(existingUser.getTimesSeen() + 1L);
+            existingUser.setTimesSeen(existingUser.getTimesSeen() + 1);
             existingUser.setLastSeen(LocalDateTime.now());
             return updateUser(existingUser);
         }
@@ -37,7 +37,7 @@ public class UserService {
         return userRepository.saveAndFlush(user);
     }
 
-    public User findUserById(Long id) {
+    public User findUserById(Integer id) {
         return userRepository.findOne(id);
     }
 
@@ -49,31 +49,37 @@ public class UserService {
         return userRepository.findByDubUserId(dubUserId);
     }
 
-    public void deleteUser(Long id) {
+    public void deleteUser(Integer id) {
         userRepository.delete(id);
     }
 
-    public User addUpdubReceived(Long id) {
+    public User addUpdubReceived(Integer id) {
         User user = findUserById(id);
-        user.setUpdubsReceived(user.getUpdubsReceived() + 1L);
+        user.setUpdubsReceived(user.getUpdubsReceived() + 1);
         return updateUser(user);
     }
 
-    public User addDowndubReceived(Long id) {
+    public User addDowndubReceived(Integer id) {
         User user = findUserById(id);
-        user.setDowndubsReceived(user.getDowndubsReceived() + 1L);
+        user.setDowndubsReceived(user.getDowndubsReceived() + 1);
         return updateUser(user);
     }
 
-    public User addUpdubGiven(Long id) {
+    public User addUpdubGiven(Integer id) {
         User user = findUserById(id);
-        user.setUpdubsGiven(user.getUpdubsGiven() + 1L);
+        user.setUpdubsGiven(user.getUpdubsGiven() + 1);
         return updateUser(user);
     }
 
-    public User addDowndubGiven(Long id) {
+    public User addDowndubGiven(Integer id) {
         User user = findUserById(id);
-        user.setDowndubsGiven(user.getDowndubsGiven() + 1L);
+        user.setDowndubsGiven(user.getDowndubsGiven() + 1);
+        return updateUser(user);
+    }
+
+    public User addGrabGiven(Integer id) {
+        User user = findUserById(id);
+        user.setGrabs(user.getGrabs() + 1);
         return updateUser(user);
     }
 }

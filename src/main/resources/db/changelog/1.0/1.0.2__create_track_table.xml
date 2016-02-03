@@ -19,11 +19,12 @@
             <column name="type" type="text" remarks="youtube or soundcloud"/>
             <column name="fkid" type="text" remarks="id for youtube or soundcloud"/>
             <column name="title" type="text" remarks="title"/>
-            <column name="timesplayed" type="bigint" remarks="Total amount of times played"/>
-            <column name="updubs" type="bigint" remarks="Total amount of updubs given"/>
-            <column name="downdubs" type="bigint" remarks="Total amount of downdubs given"/>
-            <column name="firstseen" type="date" remarks="Date first seen"/>
-            <column name="lastseen" type="date" remarks="Date last seen"/>
+            <column name="timesplayed" type="integer" remarks="Total amount of times played"/>
+            <column name="updubs" type="integer" remarks="Total amount of updubs given"/>
+            <column name="downdubs" type="integer" remarks="Total amount of downdubs given"/>
+            <column name="grabs" type="integer" remarks="Total amount of grabs"/>
+            <column name="firstseen" type="timestamp" remarks="Date first seen"/>
+            <column name="lastseen" type="timestamp" remarks="Date last seen"/>
         </createTable>
 
     </changeSet>

@@ -9,7 +9,9 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -28,7 +30,8 @@ public class DubEventService {
     protected UserVoteService userVoteService;
 
     protected UserPlay currentUserPlay;
-    protected Map<Long, Boolean> currentVotes;
+    protected Map<Integer, Boolean> currentVotes;
+    protected List<Integer> currentGrabs;
 
     public void handleEvent(JSONObject json) {
         switch(json.getString("type")) {
@@ -43,6 +46,9 @@ public class DubEventService {
                 break;
             case "room_playlist-dub":
                 handleVote(json);
+                break;
+            case "room_playlist-queue-update-grabs":
+                handleGrab(json);
                 break;
         }
     }
@@ -71,20 +77,26 @@ public class DubEventService {
         JSONObject song = json.getJSONObject("song");
         JSONObject trackInfo = json.getJSONObject("songInfo");
         currentVotes = new HashMap<>();
+        currentGrabs = new ArrayList<>();
 
         insertNewTrackDetails(song.getString("songid"), trackInfo, song.getString("userid"));
     }
 
     private void insertPreviousTrackDetails() {
-        if(currentVotes != null && currentUserPlay != null) {
-            for (Map.Entry<Long, Boolean> vote : currentVotes.entrySet()) {
-                Long voterUserId = vote.getKey();
+        if(currentVotes != null && currentGrabs != null && currentUserPlay != null) {
+            for (Map.Entry<Integer, Boolean> vote : currentVotes.entrySet()) {
+                Integer voterUserId = vote.getKey();
                 userVoteService.updateOrCreateUserVote(voterUserId, currentUserPlay.getTrackId(), currentUserPlay.getUserId(), vote.getValue());
                 if(vote.getValue()) {
                     userService.addUpdubGiven(voterUserId);
                 } else {
                     userService.addDowndubGiven(voterUserId);
                 }
+            }
+
+            for(Integer voterUserId : currentGrabs) {
+                userVoteService.addGrab(voterUserId, currentUserPlay.getTrackId(), currentUserPlay.getUserId());
+                userService.addGrabGiven(voterUserId);
             }
 
             userPlayService.updateUserPlay(currentUserPlay);
@@ -97,16 +109,45 @@ public class DubEventService {
 
             track.setUpdubs(track.getUpdubs() + currentUserPlay.getUpdubs());
             track.setDowndubs(track.getDowndubs() + currentUserPlay.getDowndubs());
+            track.setGrabs(track.getGrabs() + currentGrabs.size());
             trackService.updateTrack(track);
 
             User dj = userService.findUserById(currentUserPlay.getUserId());
             dj.setUpdubsReceived(dj.getUpdubsReceived() + currentUserPlay.getUpdubs());
             dj.setDowndubsReceived(dj.getDowndubsReceived() + currentUserPlay.getDowndubs());
+            dj.setGrabbed(dj.getGrabbed() + currentGrabs.size());
             userService.updateUser(dj);
         }
     }
 
+    private void handleGrab(JSONObject json) {
+        JSONObject playlist = (JSONObject) json.get("playlist");
+        User votingUser = getVotingUser(json);
+
+        if(currentGrabs == null) {
+            currentGrabs = new ArrayList<>();
+        }
+
+        currentUserPlay.setGrabs(playlist.getInt("grabs"));
+        currentGrabs.add(votingUser.getId());
+    }
+
     private void handleVote(JSONObject json) {
+        User votingUser = getVotingUser(json);
+        JSONObject playlist = (JSONObject) json.get("playlist");
+        String trackId = playlist.getString("songid");
+
+        dubtrackService.checkDownDubs(trackId, playlist.getLong("downdubs"));
+        currentUserPlay.setUpdubs(playlist.getInt("updubs"));
+        currentUserPlay.setDowndubs(playlist.getInt("downdubs"));
+        currentUserPlay.setGrabs(playlist.getInt("grabs"));
+        if(currentVotes == null) {
+            currentVotes = new HashMap<>();
+        }
+        currentVotes.put(votingUser.getId(), (StringUtils.equalsIgnoreCase(json.getString("dubtype"), "updub")));
+    }
+
+    private User getVotingUser(JSONObject json) {
         JSONObject playlist = (JSONObject) json.get("playlist");
         String djDubId = playlist.getString("userid");
         JSONObject jsonUser = (JSONObject) json.get("user");
@@ -122,21 +163,13 @@ public class DubEventService {
             dj = userService.createUser(new User(dubtrackService.retrieveUsernameByDubUserIdFromDubtrack(djDubId), djDubId));
         }
 
-        dubtrackService.checkDownDubs(trackId, playlist.getLong("downdubs"));
-
         if(currentUserPlay == null) {
             currentUserPlay = userPlayService.findUserPlayByUserIdAndTrackId(dj.getId(), trackId);
             if(currentUserPlay == null) {
                 currentUserPlay = userPlayService.createUserPlay(new UserPlay(dj.getId(), trackId));
             }
         }
-
-        currentUserPlay.setUpdubs(playlist.getLong("updubs"));
-        currentUserPlay.setDowndubs(playlist.getLong("downdubs"));
-        if(currentVotes == null) {
-            currentVotes = new HashMap<>();
-        }
-        currentVotes.put(votingUser.getId(), (StringUtils.equalsIgnoreCase(json.getString("dubtype"), "updub")));
+        return votingUser;
     }
 
     private void insertNewTrackDetails(String trackId, JSONObject trackInfo, String userId) {
