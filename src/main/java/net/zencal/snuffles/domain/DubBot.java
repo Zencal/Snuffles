@@ -3,15 +3,22 @@ package net.zencal.snuffles.domain;
 import net.zencal.snuffles.service.DubBotService;
 import org.jibble.pircbot.PircBot;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
 
 @Component
 public class DubBot extends PircBot {
     @Autowired
     protected DubBotService dubBotService;
 
-    public void init(String name) {
-        setName(name);
+    @Value("${irc.username}")
+    protected String ircUsername;
+
+    @PostConstruct
+    public void init() {
+        setName(ircUsername);
     }
 
     @Override

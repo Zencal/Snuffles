@@ -2,6 +2,8 @@ package net.zencal.snuffles.service;
 
 import net.zencal.snuffles.callback.HereNowCallback;
 import net.zencal.snuffles.domain.dubtrack.*;
+import net.zencal.snuffles.domain.dubtrack.payload.DubChatPayload;
+import net.zencal.snuffles.domain.dubtrack.response.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,12 +29,8 @@ public class DubtrackService {
 
     private Logger logger = LogManager.getLogger(DubtrackService.class);
 
-    @Value(("${dubtrack.room}"))
+
     protected String dubtrackRoom;
-    @Value(("${dubtrack.username}"))
-    protected String dubtrackUsername;
-    @Value(("${dubtrack.password}"))
-    protected String dubtrackPassword;
 
     @Value(("${skip.duplicate}"))
     private Boolean skipForDuplicate;
@@ -49,8 +47,9 @@ public class DubtrackService {
     private DubUser user;
     private DubRoom room;
 
-
-    public void init() {
+    @Autowired
+    public DubtrackService(@Value(("${dubtrack.room}")) String roomName, @Value(("${dubtrack.username}")) String dubtrackUsername, @Value(("${dubtrack.password}")) String dubtrackPassword) {
+        dubtrackRoom = roomName;
         restTemplate = new RestTemplate();
         logger.debug("Logging into dub");
         HttpEntity<DubLoginResponse> response = restTemplate.exchange("https://api.dubtrack.fm/auth/dubtrack?password=" + dubtrackPassword + "&username=" + dubtrackUsername, HttpMethod.POST, null, DubLoginResponse.class);
@@ -84,7 +83,7 @@ public class DubtrackService {
         logger.debug(newResponse);
     }
 
-    public List<DubCurrentUser> retrieveUserList() {
+    public List<DubRoomUser> retrieveUserList() {
         logger.debug("Retrieving user list");
         HttpEntity<DubUserListResponse> dubUserListResponse = restTemplate.exchange("https://api.dubtrack.fm/room/" + room.get_id() + "/users", HttpMethod.GET, null, DubUserListResponse.class);
         logger.debug(dubUserListResponse);
@@ -134,7 +133,7 @@ public class DubtrackService {
         return minutes + " minutes";
     }
 
-    public void checkDownDubs(String songId, Long downDubs) {
+    public void checkDownDubs(String songId, Integer downDubs) {
         updateRoomDetails();
         Integer usersInRoom = room.getActiveUsers();
         if((usersInRoom > minUsersToForDownDubs) && (downDubs > (usersInRoom * percentageRequired / 100))) {
@@ -161,18 +160,11 @@ public class DubtrackService {
     public String printUserList() {
         StringBuilder userList = new StringBuilder("Users: ");
 
-        for(DubCurrentUser currentUser : retrieveUserList()) {
+        for(DubRoomUser currentUser : retrieveUserList()) {
             userList.append(currentUser.get_user().getUsername()).append(",");
         }
 
         return userList.toString();
-    }
-
-    public void sendBTFO() {
-        sendMessage("B T F O");
-        sendMessage("T");
-        sendMessage("F");
-        sendMessage("O");
     }
 
     public void hootUp() {
@@ -188,13 +180,13 @@ public class DubtrackService {
         sendMessage(":sparkles: shupoon~ :sparkles:");
     }
 
-    public String retrieveUsernameByDubUserIdFromDubtrack(String dubUserId) {
-        return retrieveUserByDubUserIdFromDubtrack(dubUserId).getUsername();
+    public String retrieveUsernameByIdFromDubtrack(String userId) {
+        return retrieveDubUserByIdFromDubtrack(userId).getUsername();
     }
 
-    private DubUser retrieveUserByDubUserIdFromDubtrack(String dubUserId) {
+    private DubUser retrieveDubUserByIdFromDubtrack(String userId) {
         logger.debug("Retrieving user from dubtrack");
-        HttpEntity<DubUserResponse> response = restTemplate.exchange("https://api.dubtrack.fm/user/" + dubUserId, HttpMethod.GET, null, DubUserResponse.class);
+        HttpEntity<DubUserResponse> response = restTemplate.exchange("https://api.dubtrack.fm/user/" + userId, HttpMethod.GET, null, DubUserResponse.class);
         logger.debug(response.getBody());
         return response.getBody().getData();
     }
@@ -204,5 +196,12 @@ public class DubtrackService {
         HttpEntity<DubSongResponse> response = restTemplate.exchange("https://api.dubtrack.fm/song/" + trackId, HttpMethod.GET, null, DubSongResponse.class);
         logger.debug(response.getBody());
         return response.getBody().getData();
+    }
+
+    public DubActiveTrack retrieveActiveTrack() {
+        logger.debug("Getting room data");
+        HttpEntity<DubActiveTrackResponse> dubActiveTrackResponse = restTemplate.exchange("https://api.dubtrack.fm/room/" + room.get_id() + "/playlist/active", HttpMethod.GET, null, DubActiveTrackResponse.class);
+        logger.debug(dubActiveTrackResponse);
+        return dubActiveTrackResponse.getBody().getData();
     }
 }

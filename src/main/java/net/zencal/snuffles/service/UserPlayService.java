@@ -16,7 +16,7 @@ public class UserPlayService {
     @Autowired
     protected UserPlayRepository userPlayRepository;
 
-    public UserPlay updateUserPlayTimes(Integer userId, String trackId) {
+    public UserPlay updateUserPlayTimes(String userId, String trackId) {
         UserPlay existingUserPlay = findUserPlayByUserIdAndTrackId(userId, trackId);
         if(existingUserPlay == null) {
             return createUserPlay(new UserPlay(userId, trackId));
@@ -45,23 +45,23 @@ public class UserPlayService {
         userPlayRepository.delete(id);
     }
 
-    public UserPlay findUserPlayByUserIdAndTrackId(Integer userId, String trackId) {
+    public UserPlay findUserPlayByUserIdAndTrackId(String userId, String trackId) {
         return userPlayRepository.findByUserIdAndTrackId(userId, trackId);
     }
 
-    public UserPlay addUpdub(Integer userId, String trackId) {
+    public UserPlay addUpdub(String userId, String trackId) {
         UserPlay userPlay = findUserPlayByUserIdAndTrackId(userId, trackId);
         userPlay.setUpdubs(userPlay.getUpdubs() + 1);
         return updateUserPlay(userPlay);
     }
 
-    public UserPlay addDowndub(Integer userId, String trackId) {
+    public UserPlay addDowndub(String userId, String trackId) {
         UserPlay userPlay = findUserPlayByUserIdAndTrackId(userId, trackId);
         userPlay.setDowndubs(userPlay.getDowndubs() + 1);
         return updateUserPlay(userPlay);
     }
 
-    public Integer countTracksPlayedByUserId(Integer userId) {
+    public Integer countTracksPlayedByUserId(String userId) {
         return userPlayRepository.countByUserId(userId);
     }
 }

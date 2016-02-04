@@ -1,7 +1,6 @@
 package net.zencal.snuffles.domain;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,7 +10,7 @@ public class UserPlay {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
 
-    protected Integer userId;
+    protected String userId;
     protected String trackId;
     protected Integer timesPlayed;
     protected Integer updubs;
@@ -23,7 +22,7 @@ public class UserPlay {
     public UserPlay() {
     }
 
-    public UserPlay(Integer userId, String trackId) {
+    public UserPlay(String userId, String trackId) {
         this.userId = userId;
         this.trackId = trackId;
         this.timesPlayed = 1;
@@ -34,7 +33,7 @@ public class UserPlay {
         this.lastSeen = LocalDateTime.now();
     }
 
-    public UserPlay(Integer userId, String trackId, Integer timesPlayed, Integer updubs, Integer downdubs, Integer grabs, LocalDateTime firstSeen, LocalDateTime lastSeen) {
+    public UserPlay(String userId, String trackId, Integer timesPlayed, Integer updubs, Integer downdubs, Integer grabs, LocalDateTime firstSeen, LocalDateTime lastSeen) {
         this.userId = userId;
         this.trackId = trackId;
         this.timesPlayed = timesPlayed;
@@ -53,11 +52,11 @@ public class UserPlay {
         this.id = id;
     }
 
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

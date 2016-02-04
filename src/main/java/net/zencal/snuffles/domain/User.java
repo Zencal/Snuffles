@@ -1,14 +1,15 @@
 package net.zencal.snuffles.domain;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name="dubuser")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Integer id;
+    protected String id;
 
     protected String username;
     protected Integer updubsReceived;
@@ -20,12 +21,12 @@ public class User {
     protected LocalDateTime firstSeen;
     protected LocalDateTime lastSeen;
     protected Integer timesSeen;
-    protected String dubUserId;
 
     public User() {
     }
 
-    public User(String username, Integer timesSeen, Integer updubsReceived, Integer downdubsReceived, Integer grabbed, Integer updubsGiven, Integer downdubsGiven, Integer grabs, LocalDateTime firstSeen, LocalDateTime lastSeen, String dubUserId) {
+    public User(String id, String username, Integer timesSeen, Integer updubsReceived, Integer downdubsReceived, Integer grabbed, Integer updubsGiven, Integer downdubsGiven, Integer grabs, LocalDateTime firstSeen, LocalDateTime lastSeen) {
+        this.id = id;
         this.username = username;
         this.updubsReceived = updubsReceived;
         this.downdubsReceived = downdubsReceived;
@@ -36,10 +37,10 @@ public class User {
         this.firstSeen = firstSeen;
         this.lastSeen = lastSeen;
         this.timesSeen = timesSeen;
-        this.dubUserId = dubUserId;
     }
 
-    public User(String username, String dubUserId) {
+    public User(String id, String username) {
+        this.id = id;
         this.username = username;
         this.updubsReceived = 0;
         this.downdubsReceived = 0;
@@ -50,14 +51,13 @@ public class User {
         this.firstSeen = LocalDateTime.now();
         this.lastSeen = LocalDateTime.now();
         this.timesSeen = 1;
-        this.dubUserId = dubUserId;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -139,13 +139,5 @@ public class User {
 
     public void setTimesSeen(Integer timesSeen) {
         this.timesSeen = timesSeen;
-    }
-
-    public String getDubUserId() {
-        return dubUserId;
-    }
-
-    public void setDubUserId(String dubUserId) {
-        this.dubUserId = dubUserId;
     }
 }

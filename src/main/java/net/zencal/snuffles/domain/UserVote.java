@@ -10,9 +10,9 @@ public class UserVote {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
 
-    protected Integer userId;
+    protected String userId;
     protected String trackId;
-    protected Integer targetUserId;
+    protected String targetUserId;
     protected Integer updubs;
     protected Integer downdubs;
     protected Integer grabs;
@@ -22,7 +22,7 @@ public class UserVote {
     public UserVote() {
     }
 
-    public UserVote(Integer userId, String trackId, Integer targetUserId) {
+    public UserVote(String userId, String trackId, String targetUserId) {
         this.userId = userId;
         this.trackId = trackId;
         this.targetUserId = targetUserId;
@@ -33,7 +33,7 @@ public class UserVote {
         this.lastSeen = LocalDateTime.now();
     }
 
-    public UserVote(Integer userId, String trackId, Integer targetUserId, Integer updubs, Integer downdubs) {
+    public UserVote(String userId, String trackId, String targetUserId, Integer updubs, Integer downdubs) {
         this.userId = userId;
         this.trackId = trackId;
         this.targetUserId = targetUserId;
@@ -44,7 +44,7 @@ public class UserVote {
         this.lastSeen = LocalDateTime.now();
     }
 
-    public UserVote(Integer userId, String trackId, Integer targetUserId, Integer updubs, Integer downdubs, Integer grabs) {
+    public UserVote(String userId, String trackId, String targetUserId, Integer updubs, Integer downdubs, Integer grabs) {
         this.userId = userId;
         this.trackId = trackId;
         this.targetUserId = targetUserId;
@@ -63,11 +63,11 @@ public class UserVote {
         this.id = id;
     }
 
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -79,11 +79,11 @@ public class UserVote {
         this.trackId = trackId;
     }
 
-    public Integer getTargetUserId() {
+    public String getTargetUserId() {
         return targetUserId;
     }
 
-    public void setTargetUserId(Integer targetUserId) {
+    public void setTargetUserId(String targetUserId) {
         this.targetUserId = targetUserId;
     }
 

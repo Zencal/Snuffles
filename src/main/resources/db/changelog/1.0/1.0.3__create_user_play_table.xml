@@ -16,7 +16,7 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="user_play_pk"/>
             </column>
 
-            <column name="userid" type="bigint" remarks="user id"/>
+            <column name="userid" type="text" remarks="user id"/>
             <column name="trackid" type="text" remarks="track id"/>
             <column name="timesplayed" type="integer" remarks="Total amount of times played"/>
             <column name="updubs" type="integer" remarks="Total amount of updubs given"/>

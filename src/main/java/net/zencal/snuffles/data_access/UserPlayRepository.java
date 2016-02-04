@@ -8,8 +8,8 @@ import java.util.List;
 
 @Repository(value = "userPlayRepository")
 public interface UserPlayRepository extends JpaRepository<UserPlay, Integer> {
-    List<UserPlay> findByUserId(Integer userId);
+    List<UserPlay> findByUserId(String userId);
     List<UserPlay> findByTrackId(Integer trackId);
-    UserPlay findByUserIdAndTrackId(Integer userId, String trackId);
-    Integer countByUserId(Integer userId);
+    UserPlay findByUserIdAndTrackId(String userId, String trackId);
+    Integer countByUserId(String userId);
 }

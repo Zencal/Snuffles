@@ -1,4 +1,4 @@
-package net.zencal.snuffles.domain.dubtrack;
+package net.zencal.snuffles.domain.dubtrack.response;
 
 public class DubResponse {
     protected String code;

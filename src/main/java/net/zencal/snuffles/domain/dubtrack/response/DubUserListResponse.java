@@ -1,15 +1,17 @@
-package net.zencal.snuffles.domain.dubtrack;
+package net.zencal.snuffles.domain.dubtrack.response;
+
+import net.zencal.snuffles.domain.dubtrack.DubRoomUser;
 
 import java.util.List;
 
 public class DubUserListResponse extends DubResponse {
-    protected List<DubCurrentUser> data;
+    protected List<DubRoomUser> data;
 
-    public List<DubCurrentUser> getData() {
+    public List<DubRoomUser> getData() {
         return data;
     }
 
-    public void setData(List<DubCurrentUser> data) {
+    public void setData(List<DubRoomUser> data) {
         this.data = data;
     }
 

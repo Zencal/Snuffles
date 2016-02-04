@@ -1,12 +1,11 @@
 package net.zencal.snuffles.command;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import net.zencal.snuffles.domain.dubtrack.DubChatPayload;
+import net.zencal.snuffles.domain.dubtrack.payload.DubChatPayload;
 import net.zencal.snuffles.service.DubtrackService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 @BotCommand(triggers = { "btfo" })
 public class BtfoCommand extends AnnotationConfiguredDubBotCommand {
 
@@ -15,6 +14,9 @@ public class BtfoCommand extends AnnotationConfiguredDubBotCommand {
 	
 	@Override
 	public void execute(DubChatPayload chatPayload) {
-		dubtrackService.sendBTFO();
+		dubtrackService.sendMessage("B T F O");
+		dubtrackService.sendMessage("T");
+		dubtrackService.sendMessage("F");
+		dubtrackService.sendMessage("O");
 	}
 }

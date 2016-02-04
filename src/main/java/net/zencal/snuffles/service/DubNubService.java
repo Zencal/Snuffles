@@ -9,7 +9,10 @@ import net.zencal.snuffles.callback.SubscribeCallback;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
 
 @Service
 public class DubNubService {
@@ -27,15 +30,26 @@ public class DubNubService {
     @Autowired
     protected HereNowCallback hereNowCallback;
 
-    public void initialize(String publishKey, String subscribeKey, String channel) {
-        pubnub = new Pubnub(publishKey, subscribeKey);
-        this.channel = channel;
+    @Value(("${pubnub.publish.key}"))
+    protected String pubnubPublishKey;
+    @Value(("${pubnub.subscribe.key}"))
+    protected String pubNubSubscribeKey;
+
+    @Value(("${dubtrack.room}"))
+    protected String dubtrackRoom;
+
+    @PostConstruct
+    public void init() {
+        pubnub = new Pubnub(pubnubPublishKey, pubNubSubscribeKey);
+        this.channel = "dubtrackfm-".concat(dubtrackRoom);
         StringBuilder message = new StringBuilder();
         message.append("Initialized pubnub with:\n");
-        message.append("publish_key: ").append(publishKey);
-        message.append("\nsubscribe_key: ").append(subscribeKey);
+        message.append("publish_key: ").append(pubnubPublishKey);
+        message.append("\nsubscribe_key: ").append(pubNubSubscribeKey);
         message.append("\nchannel: ").append(channel);
         logger.debug(message.toString());
+
+        subscribe();
     }
 
     public void subscribe() {

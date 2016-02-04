@@ -1,8 +1,8 @@
 package net.zencal.snuffles.command;
 
-import java.util.Set;
+import net.zencal.snuffles.domain.dubtrack.payload.DubChatPayload;
 
-import net.zencal.snuffles.domain.dubtrack.DubChatPayload;
+import java.util.Set;
 
 public interface DubBotCommand {
 	public void execute(DubChatPayload chatPayload);

@@ -1,13 +1,15 @@
-package net.zencal.snuffles.domain.dubtrack;
+package net.zencal.snuffles.domain.dubtrack.response;
 
-public class DubRoomResponse extends DubResponse {
-    protected DubRoom data;
+import net.zencal.snuffles.domain.dubtrack.DubSong;
 
-    public DubRoom getData() {
+public class DubSongResponse extends DubResponse {
+    protected DubSong data;
+
+    public DubSong getData() {
         return data;
     }
 
-    public void setData(DubRoom data) {
+    public void setData(DubSong data) {
         this.data = data;
     }
 

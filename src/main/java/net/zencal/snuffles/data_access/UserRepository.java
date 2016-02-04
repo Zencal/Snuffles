@@ -5,8 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository(value = "userRepository")
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository extends JpaRepository<User, String> {
     User findByUsername(String username);
 
-    User findByDubUserId(String dubUserId);
+    User findTopByOrderByDowndubsReceivedDesc();
+
+    User findTopByOrderByUpdubsReceivedDesc();
 }

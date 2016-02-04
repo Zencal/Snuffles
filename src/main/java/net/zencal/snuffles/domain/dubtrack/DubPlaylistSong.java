@@ -1,6 +1,6 @@
 package net.zencal.snuffles.domain.dubtrack;
 
-public class DubPlaylist {
+public class DubPlaylistSong {
     protected String _song;
     protected Long created;
     protected Boolean isActive;
@@ -9,22 +9,53 @@ public class DubPlaylist {
     protected String roomid;
     protected Boolean skipped;
     protected Integer downdubs;
-    protected Boolean isPlayed;
+    protected Boolean IsPlayed;
     protected Integer __v;
     protected String _id;
     protected Long songLength;
     protected String _user;
     protected Integer updubs;
     protected String songid;
-    protected String order;
-    protected Integer grabs;
+    protected Integer order;
 
-    public String getOrder() {
-        return order;
+    public String get_song() {
+        return _song;
     }
 
-    public void setOrder(String order) {
-        this.order = order;
+    public void set_song(String _song) {
+        this._song = _song;
+    }
+
+    public Long getCreated() {
+        return created;
+    }
+
+    public void setCreated(Long created) {
+        this.created = created;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean active) {
+        isActive = active;
+    }
+
+    public String getUserid() {
+        return userid;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
+    }
+
+    public Long getIsPlayed() {
+        return played;
+    }
+
+    public void setIsPlayed(Boolean played) {
+        IsPlayed = played;
     }
 
     public Integer get__v() {
@@ -75,20 +106,16 @@ public class DubPlaylist {
         this.songid = songid;
     }
 
-    public Integer getDowndubs() {
-        return downdubs;
+    public Integer getOrder() {
+        return order;
     }
 
-    public void setDowndubs(Integer downdubs) {
-        this.downdubs = downdubs;
+    public void setOrder(Integer order) {
+        this.order = order;
     }
 
-    public Boolean getSkipped() {
-        return skipped;
-    }
-
-    public void setSkipped(Boolean skipped) {
-        this.skipped = skipped;
+    public void setPlayed(Long played) {
+        this.played = played;
     }
 
     public String getRoomid() {
@@ -99,65 +126,25 @@ public class DubPlaylist {
         this.roomid = roomid;
     }
 
-    public String getUserid() {
-        return userid;
+    public Boolean getSkipped() {
+        return skipped;
     }
 
-    public void setUserid(String userid) {
-        this.userid = userid;
+    public void setSkipped(Boolean skipped) {
+        this.skipped = skipped;
     }
 
-    public Boolean getIsActive() {
-        return isActive;
+    public Integer getDowndubs() {
+        return downdubs;
     }
 
-    public void setIsActive(Boolean active) {
-        isActive = active;
-    }
-
-    public Long getCreated() {
-        return created;
-    }
-
-    public void setCreated(Long created) {
-        this.created = created;
-    }
-
-    public String get_song() {
-        return _song;
-    }
-
-    public void set_song(String _song) {
-        this._song = _song;
-    }
-
-    public Boolean getIsPlayed() {
-        return isPlayed;
-    }
-
-    public Long getPlayed() {
-        return played;
-    }
-
-    public void setIsPlayed(Boolean isPlayed) {
-        this.isPlayed = isPlayed;
-    }
-
-    public void setPlayed(Long played) {
-        this.played = played;
-    }
-
-    public Integer getGrabs() {
-        return grabs;
-    }
-
-    public void setGrabs(Integer grabs) {
-        this.grabs = grabs;
+    public void setDowndubs(Integer downdubs) {
+        this.downdubs = downdubs;
     }
 
     @Override
     public String toString() {
-        return "DubPlaylist{" +
+        return "DubPlaylistSong{" +
                 "_song='" + _song + '\'' +
                 ", created=" + created +
                 ", isActive=" + isActive +
@@ -166,15 +153,14 @@ public class DubPlaylist {
                 ", roomid='" + roomid + '\'' +
                 ", skipped=" + skipped +
                 ", downdubs=" + downdubs +
-                ", isPlayed=" + isPlayed +
+                ", IsPlayed=" + IsPlayed +
                 ", __v=" + __v +
                 ", _id='" + _id + '\'' +
                 ", songLength=" + songLength +
                 ", _user='" + _user + '\'' +
                 ", updubs=" + updubs +
                 ", songid='" + songid + '\'' +
-                ", order='" + order + '\'' +
-                ", order='" + grabs + '\'' +
+                ", order=" + order +
                 '}';
     }
 }

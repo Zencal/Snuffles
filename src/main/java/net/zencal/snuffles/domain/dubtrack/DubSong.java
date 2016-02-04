@@ -1,8 +1,5 @@
 package net.zencal.snuffles.domain.dubtrack;
 
-import java.util.Date;
-import java.util.List;
-
 public class DubSong {
     protected String _id;
     protected String name;
@@ -15,7 +12,7 @@ public class DubSong {
     protected Long songLength;
     protected String songBitrate;
     protected String songMeta;
-    protected Date created;
+    protected Long created;
     protected Integer updub;
     protected Integer downdub;
     protected String userid;
@@ -109,11 +106,11 @@ public class DubSong {
         this.songMeta = songMeta;
     }
 
-    public Date getCreated() {
+    public Long getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(Long created) {
         this.created = created;
     }
 

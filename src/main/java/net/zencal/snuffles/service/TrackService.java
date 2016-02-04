@@ -35,6 +35,14 @@ public class TrackService {
         return trackRepository.findOne(id);
     }
 
+    public Track findTrackByHighestUpdubs() {
+        return trackRepository.findTopByOrderByUpdubsDesc();
+    }
+
+    public Track findTrackByHighestDowndubs() {
+        return trackRepository.findTopByOrderByDowndubsDesc();
+    }
+
     public void deleteTrack(String id) {
         trackRepository.delete(id);
     }

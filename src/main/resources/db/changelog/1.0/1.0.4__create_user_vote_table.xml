@@ -16,9 +16,9 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="user_vote_pk"/>
             </column>
 
-            <column name="userid" type="integer" remarks="user id"/>
+            <column name="userid" type="text" remarks="user id"/>
             <column name="trackid" type="text" remarks="track id"/>
-            <column name="targetuserid" type="integer" remarks="Total amount of times played"/>
+            <column name="targetuserid" type="text" remarks="targer user id"/>
             <column name="updubs" type="integer" remarks="Total amount of updubs given"/>
             <column name="downdubs" type="integer" remarks="Total amount of downdubs given"/>
             <column name="grabs" type="integer" remarks="Total amount of grabs given"/>

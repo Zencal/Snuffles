@@ -8,8 +8,8 @@ import java.util.List;
 
 @Repository(value = "userVoteRepository")
 public interface UserVoteRepository extends JpaRepository<UserVote, Integer> {
-    List<UserVote> findByUserId(Integer userId);
+    List<UserVote> findByUserId(String userId);
     List<UserVote> findByTrackId(Integer trackId);
     List<UserVote> findByTargetUserId(Long targetUserId);
-    UserVote findByUserIdAndTrackIdAndTargetUserId(Integer userId, String trackId, Integer targetUserId);
+    UserVote findByUserIdAndTrackIdAndTargetUserId(String userId, String trackId, String targetUserId);
 }

@@ -1,4 +1,6 @@
-package net.zencal.snuffles.domain.dubtrack;
+package net.zencal.snuffles.domain.dubtrack.payload;
+
+import net.zencal.snuffles.domain.dubtrack.DubUser;
 
 public class DubChatPayload {
     protected String chatid;

@@ -1,13 +1,14 @@
 package net.zencal.snuffles.service;
 
 import net.zencal.snuffles.domain.DubBot;
-import org.jibble.pircbot.IrcException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jibble.pircbot.IrcException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,35 +26,37 @@ public class DubBotService {
     protected Boolean enabled;
     @Value("${irc.password}")
     protected String password;
-
-    protected DubBot dubBot;
+    @Value(("${irc.server}"))
+    protected String hostname;
+    @Value(("${irc.channel}"))
     protected String channel;
+    @Value(("${irc.port}"))
+    protected Integer port;
+    @Value(("${irc.key}"))
+    protected String key;
 
-    public void init(DubBot dubBot) {
-        this.dubBot = dubBot;
-    }
+    @Autowired
+    protected DubBot dubBot;
 
-    public void connect(String hostname, String channel) {
-        connect(hostname, null, channel, null);
-    }
+    @PostConstruct
+    public void connect() {
+        if(enabled) {
+            try {
+                if (port != null) {
+                    dubBot.connect(hostname, port);
+                } else {
+                    dubBot.connect(hostname);
+                }
 
-    public void connect(String hostname, Integer port, String channel, String key) {
-        this.channel = channel;
-        try {
-            if(port != null) {
-                dubBot.connect(hostname, port);
-            } else {
-                dubBot.connect(hostname);
+                dubBot.sendMessage("NickServ", "IDENTIFY ".concat(password));
+            } catch (IrcException | IOException e) {
+                log(e.getMessage());
             }
-
-            dubBot.sendMessage("NickServ", "IDENTIFY ".concat(password));
-        } catch (IrcException|IOException e) {
-            log(e.getMessage());
-        }
-        if(key != null) {
-            dubBot.joinChannel(this.channel);
-        } else {
-            dubBot.joinChannel(this.channel, key);
+            if (key != null) {
+                dubBot.joinChannel(channel);
+            } else {
+                dubBot.joinChannel(channel, key);
+            }
         }
     }
 
@@ -101,7 +104,6 @@ public class DubBotService {
     public void sendDubtrackMessage(String username, String chatMessage) {
         if(enabled) {
             StringBuilder message = new StringBuilder();
-//        message.append("[").append(timestamp).append("] ");
             message.append(username).append(": ");
             message.append(chatMessage);
             dubBot.sendMessage(channel, message.toString());

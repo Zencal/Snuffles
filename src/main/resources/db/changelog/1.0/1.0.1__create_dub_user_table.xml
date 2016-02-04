@@ -12,7 +12,7 @@
         </preConditions>
 
         <createTable tableName="dubuser" remarks="Dubtrack User">
-            <column name="id" type="serial" remarks="user id">
+            <column name="id" type="text" remarks="user id">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="dub_user_pk"/>
             </column>
 
@@ -26,7 +26,6 @@
             <column name="firstseen" type="timestamp" remarks="Date first seen"/>
             <column name="lastseen" type="timestamp" remarks="Date last seen"/>
             <column name="timesseen" type="integer" remarks="Times seen"/>
-            <column name="dubuserid" type="text" remarks="Dub User Id"/>
         </createTable>
 
     </changeSet>

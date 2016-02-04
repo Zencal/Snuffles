@@ -28,4 +28,4 @@ The existing functionality includes:
 
 * JDK 1.8
 * Gradle 2.10
-* PostgreSQL 9.5
+* PostgreSQL 9.2+

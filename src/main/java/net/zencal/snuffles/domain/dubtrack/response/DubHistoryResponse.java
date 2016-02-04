@@ -1,4 +1,6 @@
-package net.zencal.snuffles.domain.dubtrack;
+package net.zencal.snuffles.domain.dubtrack.response;
+
+import net.zencal.snuffles.domain.dubtrack.DubHistory;
 
 import java.util.List;
 

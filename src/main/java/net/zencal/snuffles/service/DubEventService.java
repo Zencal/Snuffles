@@ -1,14 +1,22 @@
 package net.zencal.snuffles.service;
 
+import com.google.gson.Gson;
 import net.zencal.snuffles.domain.Track;
 import net.zencal.snuffles.domain.User;
 import net.zencal.snuffles.domain.UserPlay;
-import net.zencal.snuffles.domain.dubtrack.DubSong;
+import net.zencal.snuffles.domain.dubtrack.*;
+import net.zencal.snuffles.domain.dubtrack.payload.DubPlaylistUpdatePayload;
+import net.zencal.snuffles.domain.dubtrack.payload.DubUserJoinPayload;
+import net.zencal.snuffles.domain.dubtrack.payload.DubUserLeavePayload;
+import net.zencal.snuffles.domain.dubtrack.payload.DubVotePayload;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +24,8 @@ import java.util.Map;
 
 @Service
 public class DubEventService {
+    private Logger logger = LogManager.getLogger(DubEventService.class);
+
     @Autowired
     protected DubBotService dubBotService;
     @Autowired
@@ -30,8 +40,34 @@ public class DubEventService {
     protected UserVoteService userVoteService;
 
     protected UserPlay currentUserPlay;
-    protected Map<Integer, Boolean> currentVotes;
-    protected List<Integer> currentGrabs;
+    protected Map<String, Boolean> currentVotes;
+    protected List<String> currentGrabs;
+
+    @PostConstruct
+    public void init() {
+        DubActiveTrack dubActiveTrack = dubtrackService.retrieveActiveTrack();
+        DubPlaylistSong dubPlaylistSong = dubActiveTrack.getSong();
+        String djId = dubPlaylistSong.getUserid();
+        String trackId = dubActiveTrack.getSongInfo().get_id();
+
+        User dj = userService.findUserById(djId);
+        if(dj == null) {
+            dj = userService.createUser(new User(djId, dubtrackService.retrieveUsernameByIdFromDubtrack(djId)));
+        }
+
+        if(currentUserPlay == null) {
+            currentUserPlay = userPlayService.findUserPlayByUserIdAndTrackId(dj.getId(), trackId);
+            if(currentUserPlay == null) {
+                currentUserPlay = userPlayService.createUserPlay(new UserPlay(dj.getId(), trackId));
+            }
+        }
+
+        currentUserPlay.setUpdubs(dubPlaylistSong.getUpdubs());
+        currentUserPlay.setDowndubs(dubPlaylistSong.getDowndubs());
+
+        currentGrabs = new ArrayList<>();
+        currentVotes = new HashMap<>();
+    }
 
     public void handleEvent(JSONObject json) {
         switch(json.getString("type")) {
@@ -54,38 +90,42 @@ public class DubEventService {
     }
 
     protected void handleUserJoin(JSONObject json) {
-        JSONObject user = json.getJSONObject("user");
-        String username = user.getString("username");
+        DubUserJoinPayload dubUserJoinPayload = new Gson().fromJson(json.toString(), DubUserJoinPayload.class);
+        DubUser user = dubUserJoinPayload.getUser();
+        String username = user.getUsername();
+        String userId = user.get_id();
+
         dubBotService.sendDubtrackUserJoin(username);
-        userService.updateLastSeen(username, user.getString("_id"));
-        if(StringUtils.equalsIgnoreCase(username, "poondonkus")) {
+        userService.updateLastSeen(username, userId);
+        if(StringUtils.equalsIgnoreCase(userId, "56018ca04693ff0300c74b97")) {
+            //poondonkus joined
             dubtrackService.shupoon();
-        } else if(StringUtils.equalsIgnoreCase(username, "mrhoot")) {
+        } else if(StringUtils.equalsIgnoreCase(userId, "53fcc4e54517e20200e73b61")) {
+            //hoot and patoot
             dubtrackService.hootUp();
         }
     }
 
     private void handleUserLeave(JSONObject json) {
-        JSONObject user = json.getJSONObject("user");
-        dubBotService.sendDubtrackUserLeave(user.getString("username"));
+        DubUserLeavePayload dubUserLeavePayload = new Gson().fromJson(json.toString(), DubUserLeavePayload.class);
+        dubBotService.sendDubtrackUserLeave(dubUserLeavePayload.getUser().getUsername());
     }
 
     private void handleTrackChange(JSONObject json) {
-        /*{"song":{"_song":"566393c14d7e2d5f00269a23","created":1453957198111,"isActive":true,"userid":"54d68b035ebafa030039a38f","played":1454284754803,"roomid":"53f7d4960451940200ffec4f","skipped":false,"downdubs":0,"isPlayed":false,"__v":0,"_id":"56a9a04ecb4e6885043a96f7","songLength":184000,"_user":"54d68b035ebafa030039a38f","updubs":0,"songid":"566393c14d7e2d5f00269a23","order":14},"startTime":-1,"type":"room_playlist-update","songInfo":{"images":{"youtube":{"standard":{"width":640,"url":"https://i.ytimg.com/vi/i_GP1tt6_Fk/sddefault.jpg","height":480},"default":{"width":120,"url":"https://i.ytimg.com/vi/i_GP1tt6_Fk/default.jpg","height":90},"high":{"width":480,"url":"https://i.ytimg.com/vi/i_GP1tt6_Fk/hqdefault.jpg","height":360},"maxres":{"width":1280,"url":"https://i.ytimg.com/vi/i_GP1tt6_Fk/maxresdefault.jpg","height":720},"medium":{"width":320,"url":"https://i.ytimg.com/vi/i_GP1tt6_Fk/mqdefault.jpg","height":180}},"thumbnail":"https://i.ytimg.com/vi/i_GP1tt6_Fk/hqdefault.jpg"},"updub":0,"created":1449366465224,"downdub":0,"__v":0,"name":"OC ReMix #2862: Kirby&apos;s Dream Land &apos;Cabbage Salad&apos; [Green Greens, Castle Lololo] by Y","description":null,"_id":"566393c14d7e2d5f00269a23","songLength":184000,"type":"youtube","userid":null,"fkid":"i_GP1tt6_Fk"}}*/
+        DubPlaylistUpdatePayload dubPlaylistUpdatePayload = new Gson().fromJson(json.toString(), DubPlaylistUpdatePayload.class);
+
         insertPreviousTrackDetails();
 
-        JSONObject song = json.getJSONObject("song");
-        JSONObject trackInfo = json.getJSONObject("songInfo");
         currentVotes = new HashMap<>();
         currentGrabs = new ArrayList<>();
 
-        insertNewTrackDetails(song.getString("songid"), trackInfo, song.getString("userid"));
+        insertNewTrackDetails(dubPlaylistUpdatePayload.getSongInfo(), dubPlaylistUpdatePayload.getSong().getUserid());
     }
 
     private void insertPreviousTrackDetails() {
         if(currentVotes != null && currentGrabs != null && currentUserPlay != null) {
-            for (Map.Entry<Integer, Boolean> vote : currentVotes.entrySet()) {
-                Integer voterUserId = vote.getKey();
+            for (Map.Entry<String, Boolean> vote : currentVotes.entrySet()) {
+                String voterUserId = vote.getKey();
                 userVoteService.updateOrCreateUserVote(voterUserId, currentUserPlay.getTrackId(), currentUserPlay.getUserId(), vote.getValue());
                 if(vote.getValue()) {
                     userService.addUpdubGiven(voterUserId);
@@ -94,7 +134,7 @@ public class DubEventService {
                 }
             }
 
-            for(Integer voterUserId : currentGrabs) {
+            for(String voterUserId : currentGrabs) {
                 userVoteService.addGrab(voterUserId, currentUserPlay.getTrackId(), currentUserPlay.getUserId());
                 userService.addGrabGiven(voterUserId);
             }
@@ -116,68 +156,53 @@ public class DubEventService {
             dj.setUpdubsReceived(dj.getUpdubsReceived() + currentUserPlay.getUpdubs());
             dj.setDowndubsReceived(dj.getDowndubsReceived() + currentUserPlay.getDowndubs());
             dj.setGrabbed(dj.getGrabbed() + currentGrabs.size());
+            logger.debug("Updating User " + dj.getId() + " with " + dj.getUpdubsReceived() + " updubs received, " + dj.getDowndubsReceived() + " downdubs received and " + dj.getGrabbed() + " grabbed");
             userService.updateUser(dj);
         }
     }
 
     private void handleGrab(JSONObject json) {
-        JSONObject playlist = (JSONObject) json.get("playlist");
-        User votingUser = getVotingUser(json);
+        DubVotePayload dubVotePayload = new Gson().fromJson(json.toString(), DubVotePayload.class);
+        DubPlaylist playlist = dubVotePayload.getPlaylist();
+        User votingUser = getVotingUser(dubVotePayload.getUser());
 
-        if(currentGrabs == null) {
-            currentGrabs = new ArrayList<>();
-        }
-
-        currentUserPlay.setGrabs(playlist.getInt("grabs"));
+        currentUserPlay.setGrabs(playlist.getGrabs());
         currentGrabs.add(votingUser.getId());
+        logger.debug("Added userId: " + votingUser.getId() +  "to currentGrabs list");
     }
 
     private void handleVote(JSONObject json) {
-        User votingUser = getVotingUser(json);
-        JSONObject playlist = (JSONObject) json.get("playlist");
-        String trackId = playlist.getString("songid");
+        DubVotePayload dubVotePayload = new Gson().fromJson(json.toString(), DubVotePayload.class);
+        DubPlaylist playlist = dubVotePayload.getPlaylist();
+        User votingUser = getVotingUser(dubVotePayload.getUser());
 
-        dubtrackService.checkDownDubs(trackId, playlist.getLong("downdubs"));
-        currentUserPlay.setUpdubs(playlist.getInt("updubs"));
-        currentUserPlay.setDowndubs(playlist.getInt("downdubs"));
-        currentUserPlay.setGrabs(playlist.getInt("grabs"));
-        if(currentVotes == null) {
-            currentVotes = new HashMap<>();
-        }
-        currentVotes.put(votingUser.getId(), (StringUtils.equalsIgnoreCase(json.getString("dubtype"), "updub")));
+        String trackId = playlist.getSongid();
+        Integer downDubs = playlist.getDowndubs();
+        dubtrackService.checkDownDubs(trackId, downDubs);
+        currentUserPlay.setUpdubs(playlist.getUpdubs());
+        currentUserPlay.setDowndubs(downDubs);
+
+        currentVotes.put(votingUser.getId(), (StringUtils.equalsIgnoreCase(dubVotePayload.getDubtype(), "updub")));
+        logger.debug("Added userId: " + votingUser.getId() + " vote as " + (currentVotes.get(votingUser.getId()) ? "updub" : "downdub") + " to currentVotes map");
     }
 
-    private User getVotingUser(JSONObject json) {
-        JSONObject playlist = (JSONObject) json.get("playlist");
-        String djDubId = playlist.getString("userid");
-        JSONObject jsonUser = (JSONObject) json.get("user");
-        String votingUserUsername = jsonUser.getString("username");
-        String trackId = playlist.getString("songid");
-
-        User votingUser = userService.findUserByUsername(votingUserUsername);
+    private User getVotingUser(DubUser votingDubUser) {
+        String votingUserId = votingDubUser.get_id();
+        User votingUser = userService.findUserById(votingUserId);
         if(votingUser == null) {
-            votingUser = userService.createUser(new User(votingUserUsername, jsonUser.getString("_id")));
-        }
-        User dj = userService.findUserByDubUserId(djDubId);
-        if(dj == null) {
-            dj = userService.createUser(new User(dubtrackService.retrieveUsernameByDubUserIdFromDubtrack(djDubId), djDubId));
+            votingUser = userService.createUser(new User(votingUserId, votingDubUser.getUsername()));
         }
 
-        if(currentUserPlay == null) {
-            currentUserPlay = userPlayService.findUserPlayByUserIdAndTrackId(dj.getId(), trackId);
-            if(currentUserPlay == null) {
-                currentUserPlay = userPlayService.createUserPlay(new UserPlay(dj.getId(), trackId));
-            }
-        }
         return votingUser;
     }
 
-    private void insertNewTrackDetails(String trackId, JSONObject trackInfo, String userId) {
+    private void insertNewTrackDetails(DubSong dubSong, String userId) {
+        String trackId = dubSong.get_id();
         dubtrackService.sendMessageIfTrackHasBeenPlayedRecently(trackId);
-        Track track = trackService.updateTimesPlayed(trackId, trackInfo.getString("type"), trackInfo.getString("fkid"), trackInfo.getString("name"));
-        User user = userService.findUserByDubUserId(userId);
+        Track track = trackService.updateTimesPlayed(trackId, dubSong.getType(), dubSong.getFkid(), dubSong.getName());
+        User user = userService.findUserById(userId);
         if(user == null) {
-            user = userService.createUser(new User(dubtrackService.retrieveUsernameByDubUserIdFromDubtrack(userId), userId));
+            user = userService.createUser(new User(userId, dubtrackService.retrieveUsernameByIdFromDubtrack(userId)));
         }
         currentUserPlay = userPlayService.updateUserPlayTimes(user.getId(), track.getId());
     }

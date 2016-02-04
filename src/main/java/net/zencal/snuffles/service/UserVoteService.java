@@ -24,7 +24,8 @@ public class UserVoteService {
         return userVoteRepository.saveAndFlush(userVote);
     }
 
-    public UserVote updateOrCreateUserVote(Integer userId, String trackId, Integer targetUserId, Boolean vote) {
+    public UserVote updateOrCreateUserVote(String userId, String trackId, String targetUserId, Boolean vote) {
+        logger.debug("Finding user vote by userId: " + userId + " trackId: " + trackId + " targetId: " + targetUserId);
         UserVote existingUserVote = findUserVoteByUserIdAndTrackIdAndTargetUserId(userId, trackId, targetUserId);
         Integer downDubs = 0;
         Integer upDubs = 0;
@@ -38,6 +39,7 @@ public class UserVoteService {
                 downDubs = 1;
             }
 
+            logger.debug("User Vote for userId: " + userId + " trackId: " + trackId + " targetId: " + targetUserId + " does not exist, creating with " + upDubs + " updubs and " + downDubs + " downdubs");
             return createUserVote(new UserVote(userId, trackId, targetUserId, upDubs, downDubs));
         } else {
             if(vote) {
@@ -52,6 +54,7 @@ public class UserVoteService {
             existingUserVote.setUpdubs(upDubs);
             existingUserVote.setDowndubs(downDubs);
 
+            logger.debug("User Vote for userId: " + userId + " trackId: " + trackId + " targetId: " + targetUserId + " found, updating to add " + upDubs + " updubs and " + downDubs + " downdubs");
             return updateUserVote(existingUserVote);
         }
     }
@@ -64,11 +67,11 @@ public class UserVoteService {
         userVoteRepository.delete(id);
     }
 
-    public UserVote findUserVoteByUserIdAndTrackIdAndTargetUserId(Integer userId, String trackId, Integer targetUserId) {
+    public UserVote findUserVoteByUserIdAndTrackIdAndTargetUserId(String userId, String trackId, String targetUserId) {
         return userVoteRepository.findByUserIdAndTrackIdAndTargetUserId(userId, trackId, targetUserId);
     }
 
-    public UserVote addUpdub(Integer userId, String trackId, Integer targetUserId) {
+    public UserVote addUpdub(String userId, String trackId, String targetUserId) {
         UserVote userVote = findUserVoteByUserIdAndTrackIdAndTargetUserId(userId, trackId, targetUserId);
         if(userVote == null) {
             userVote = createUserVote(new UserVote(userId, trackId, targetUserId));
@@ -77,7 +80,7 @@ public class UserVoteService {
         return updateUserVote(userVote);
     }
 
-    public UserVote addDowndub(Integer userId, String trackId, Integer targetUserId) {
+    public UserVote addDowndub(String userId, String trackId, String targetUserId) {
         UserVote userVote = findUserVoteByUserIdAndTrackIdAndTargetUserId(userId, trackId, targetUserId);
         if(userVote == null) {
             userVote = createUserVote(new UserVote(userId, trackId, targetUserId));
@@ -86,7 +89,7 @@ public class UserVoteService {
         return updateUserVote(userVote);
     }
 
-    public UserVote addGrab(Integer userId, String trackId, Integer targetUserId) {
+    public UserVote addGrab(String userId, String trackId, String targetUserId) {
         UserVote existingUserVote = findUserVoteByUserIdAndTrackIdAndTargetUserId(userId, trackId, targetUserId);
 
         if (existingUserVote == null) {

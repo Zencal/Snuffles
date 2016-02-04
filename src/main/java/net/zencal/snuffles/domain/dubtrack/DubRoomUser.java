@@ -1,6 +1,6 @@
 package net.zencal.snuffles.domain.dubtrack;
 
-public class DubCurrentUser {
+public class DubRoomUser {
     protected String _id;
     protected Long updated;
     protected Long skippedCount;
@@ -57,11 +57,11 @@ public class DubCurrentUser {
         this.songsInQueue = songsInQueue;
     }
 
-    public Boolean getActive() {
+    public Boolean getIsActive() {
         return active;
     }
 
-    public void setActive(Boolean active) {
+    public void setIsActive(Boolean active) {
         this.active = active;
     }
 
@@ -139,7 +139,7 @@ public class DubCurrentUser {
 
     @Override
     public String toString() {
-        return "DubCurrentUser{" +
+        return "DubRoomUser{" +
                 "_id='" + _id + '\'' +
                 ", updated=" + updated +
                 ", skippedCount=" + skippedCount +

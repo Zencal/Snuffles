@@ -1,4 +1,6 @@
-package net.zencal.snuffles.domain.dubtrack;
+package net.zencal.snuffles.domain.dubtrack.response;
+
+import net.zencal.snuffles.domain.dubtrack.DubUser;
 
 public class DubUserResponse extends DubResponse{
     protected DubUser data;

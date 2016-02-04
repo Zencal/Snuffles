@@ -1,5 +1,10 @@
-[
-  "Am I kawaii, <<username>>?",
-  "I love <<username>> so much!",
-  "I'm glad <<username>> is my bf even if he has a tiny penis :3"
-]
+{
+  "commandTriggers": [
+    "bemygf"
+  ],
+  "responses": [
+    "Am I kawaii, <<username>>?",
+    "I love <<username>> so much!",
+    "I'm glad <<username>> is my bf even if he has a tiny penis :3"
+  ]
+}
