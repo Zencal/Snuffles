@@ -28,12 +28,12 @@ public class UserPlayService {
     }
 
     public UserPlay createUserPlay(UserPlay userPlay) {
-        logger.debug("Creating new UserPlay trackId: " + userPlay.getTrackId() + " userId: " + userPlay.getUserId());
+        logger.debug("Creating new UserPlay trackId: " + userPlay.getTrackId() + " userId: " + userPlay.getUserId() + "and timesPlayed: " + userPlay.getTimesPlayed());
         return userPlayRepository.saveAndFlush(userPlay);
     }
 
     public UserPlay updateUserPlay(UserPlay userPlay) {
-        logger.debug("Updating UserPlay id:" + userPlay.getId());
+        logger.debug("Updating UserPlay id:" + userPlay.getId() + " for trackId: " + userPlay.getTrackId() + " to timesPlayed: " + userPlay.getTimesPlayed());
         return userPlayRepository.saveAndFlush(userPlay);
     }
 

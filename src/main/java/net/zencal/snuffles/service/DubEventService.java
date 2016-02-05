@@ -107,19 +107,26 @@ public class DubEventService {
     }
 
     private void handleUserLeave(JSONObject json) {
-        DubUserLeavePayload dubUserLeavePayload = new Gson().fromJson(json.toString(), DubUserLeavePayload.class);
-        dubBotService.sendDubtrackUserLeave(dubUserLeavePayload.getUser().getUsername());
+        try {
+            DubUserLeavePayload dubUserLeavePayload = new Gson().fromJson(json.toString(), DubUserLeavePayload.class);
+            dubBotService.sendDubtrackUserLeave(dubUserLeavePayload.getUser().getUsername());
+        } catch(Exception exception) {
+            logger.error(exception);
+        }
     }
 
     private void handleTrackChange(JSONObject json) {
         DubPlaylistUpdatePayload dubPlaylistUpdatePayload = new Gson().fromJson(json.toString(), DubPlaylistUpdatePayload.class);
+        logger.debug("TRACK CHANGE EVENT TO TRACKID: " + dubPlaylistUpdatePayload.getSongInfo().get_id() + " WITH START TIME " + dubPlaylistUpdatePayload.getStartTime());
 
-        insertPreviousTrackDetails();
+        if(dubPlaylistUpdatePayload.getStartTime() == -1) {
+            insertPreviousTrackDetails();
 
-        currentVotes = new HashMap<>();
-        currentGrabs = new ArrayList<>();
+            currentVotes = new HashMap<>();
+            currentGrabs = new ArrayList<>();
 
-        insertNewTrackDetails(dubPlaylistUpdatePayload.getSongInfo(), dubPlaylistUpdatePayload.getSong().getUserid());
+            insertNewTrackDetails(dubPlaylistUpdatePayload.getSongInfo(), dubPlaylistUpdatePayload.getSong().getUserid());
+        }
     }
 
     private void insertPreviousTrackDetails() {
