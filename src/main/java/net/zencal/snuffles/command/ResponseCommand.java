@@ -18,7 +18,7 @@ public abstract class ResponseCommand extends FileConfiguredDubBotCommand {
     public void execute(DubChatPayload chatPayload) {
         ResponseConfiguration responseConfiguration = new Gson().fromJson(configurationJson.toString(), ResponseConfiguration.class);
         Random random = new Random();
-        Integer randomInt = random.nextInt((responseConfiguration.getResponses().size()) + 1);
+        Integer randomInt = random.nextInt(responseConfiguration.getResponses().size());
         String response = responseConfiguration.getResponses().get(randomInt);
         dubtrackService.sendMessage(response.replaceAll("<<username>>", chatPayload.getUser().getUsername()));
     }

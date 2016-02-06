@@ -41,6 +41,10 @@ public class DubtrackService {
     private Integer minUsersToForDownDubs;
     @Value(("${percentage.downdubs}"))
     private Integer percentageRequired;
+    @Value(("${history.pages}"))
+    private Integer historyPages;
+    @Value(("${dubtrack.send.message}"))
+    private Boolean sendMessage;
 
     private RestTemplate restTemplate;
     private HttpHeaders requestHeaders;
@@ -77,10 +81,14 @@ public class DubtrackService {
     }
 
     public void sendMessage(String message) {
-        logger.debug("Sending message");
-        DubChatPayload dubChatPayload = new DubChatPayload(null, message, "dubtrackfm-".concat(dubtrackRoom), new Date().getTime(),"chat-message", user);
-        HttpEntity<String> newResponse = restTemplate.exchange("https://api.dubtrack.fm/chat/" + room.get_id(), HttpMethod.POST, new HttpEntity<DubChatPayload>(dubChatPayload, requestHeaders), String.class);
-        logger.debug(newResponse);
+        if(sendMessage) {
+            logger.debug("Sending message");
+            DubChatPayload dubChatPayload = new DubChatPayload(null, message, "dubtrackfm-".concat(dubtrackRoom), new Date().getTime(), "chat-message", user);
+            HttpEntity<String> newResponse = restTemplate.exchange("https://api.dubtrack.fm/chat/" + room.get_id(), HttpMethod.POST, new HttpEntity<DubChatPayload>(dubChatPayload, requestHeaders), String.class);
+            logger.debug(newResponse);
+        } else {
+            logger.debug("Message sending switched off. Not sending message: " + message);
+        }
     }
 
     public List<DubRoomUser> retrieveUserList() {
@@ -92,14 +100,19 @@ public class DubtrackService {
 
     public List<DubHistory> retrieveRoomHistory() {
         logger.debug("Retrieving room history");
-        HttpEntity<DubHistoryResponse> dubHistoryResponse = restTemplate.exchange("https://api.dubtrack.fm/room/" + room.get_id() + "/playlist/history", HttpMethod.GET, null, DubHistoryResponse.class);
-        logger.debug(dubHistoryResponse);
-        return dubHistoryResponse.getBody().getData();
+        List<DubHistory> historyList = new ArrayList<DubHistory>();
+        for(int page=0;page <= historyPages; page++) {
+            HttpEntity<DubHistoryResponse> dubHistoryResponse = restTemplate.exchange("https://api.dubtrack.fm/room/" + room.get_id() + "/playlist/history?page=" + page, HttpMethod.GET, null, DubHistoryResponse.class);
+            logger.debug(dubHistoryResponse);
+            historyList.addAll(dubHistoryResponse.getBody().getData());
+        }
+        return historyList;
     }
 
     public DubHistory retrieveDubHistoryIfTrackHasBeenPlayedRecently(String trackId) {
         logger.debug("Checking if song has been played recently");
         List<DubHistory> historyList = retrieveRoomHistory();
+        logger.debug("Retrieved " + historyList.size() + " history records");
         for(DubHistory history : historyList) {
             if(StringUtils.equalsIgnoreCase(trackId, history.getSongid())) {
                 return history;
@@ -136,7 +149,9 @@ public class DubtrackService {
     public void checkDownDubs(String songId, Integer downDubs) {
         updateRoomDetails();
         Integer usersInRoom = room.getActiveUsers();
-        if((usersInRoom > minUsersToForDownDubs) && (downDubs > (usersInRoom * percentageRequired / 100))) {
+        Long amountRequired = Math.round(((usersInRoom * percentageRequired) / 100.0));
+        logger.debug("There are " + downDubs + " downdubs out of a required " + amountRequired + " to skip");
+        if((usersInRoom > minUsersToForDownDubs) && (downDubs > amountRequired)) {
             sendMessage("Over " + percentageRequired + "% of users have downvoted");
             if(skipForDownDubs) {
                 skipPlayingTrack(songId);
@@ -153,7 +168,7 @@ public class DubtrackService {
 
     public void skipPlayingTrack(String songId) {
         logger.debug("Skipping track");
-        HttpEntity<String> response = restTemplate.exchange("https://api.dubtrack.fm/chat/skip/" + room.get_id() + "/" + songId, HttpMethod.POST, new HttpEntity<Object>(null, requestHeaders), String.class);
+        HttpEntity<String> response = restTemplate.exchange("https://api.dubtrack.fm/chat/skip/" + room.get_id() + "/" + songId + "&realTimeChannel=dubtrackfm-".concat(dubtrackRoom), HttpMethod.POST, new HttpEntity<Object>(null, requestHeaders), String.class);
         logger.debug(response.getBody());
     }
 
