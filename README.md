@@ -1,4 +1,4 @@
-# Snuffles
+# Snuffles - DEPRECATED
 
 Snuffles is a Java based bot for [dubtrack.fm](https://www.dubtrack.fm) based upon enhancing the user experience of dubtrack through a number of features. Snuffles is also based on and shamelessly copies functionality from [EmancipatorBot](https://github.com/chrishayesmu/EmancipatorBot)
 
